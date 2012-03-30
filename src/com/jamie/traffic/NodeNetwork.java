@@ -133,7 +133,7 @@ public class NodeNetwork {
 
 		int max = 0;
 		for (Car c : myCars) {
-			c.points -= min + 1;
+			c.points -= min - 1;
 			if (c.points > max)
 				max = c.points;
 		}
