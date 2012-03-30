@@ -1,12 +1,14 @@
 package com.jamie.traffic;
 
+import java.awt.FlowLayout;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 
 public class MainFrame extends JFrame {
@@ -23,15 +25,23 @@ public class MainFrame extends JFrame {
 			myTrafficPanel = new TrafficPanel(500, 500, nn);
 			main.add(myTrafficPanel);
 
-			JSlider slider = new JSlider(0, 100);
-			slider.setValue(1);
+			JSlider slider = new JSlider(0, 50);
+			slider.setMajorTickSpacing(10);
+			slider.setMinorTickSpacing(5);
+			slider.setSnapToTicks(true);
+			slider.setValue(10);
+			slider.setPaintTicks(true);
 			nn.mySpinner = slider;
-			main.add(slider);
+
+			JPanel sliderPanel = new JPanel(new FlowLayout());
+			sliderPanel.add(new JLabel("Wait time between updates:"));
+			sliderPanel.add(slider);
+			main.add(sliderPanel);
 
 			this.getContentPane().add(main);
 			this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 			this.pack();
-			this.setSize(500, 500);
+			this.setSize(500, 510);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -41,7 +51,6 @@ public class MainFrame extends JFrame {
 		NodeNetwork n = new NodeNetwork();
 		MainFrame main = new MainFrame(n);
 		main.setVisible(true);
-
 		while (true) {
 			n.update();
 			main.repaint();

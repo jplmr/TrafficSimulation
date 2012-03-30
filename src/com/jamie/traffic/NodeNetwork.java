@@ -28,6 +28,7 @@ public class NodeNetwork {
 	private int updateMaximum = 3000;
 	private int generationSize = 20;
 	private int generation = 0;
+	private int currentTotalPoints = 0;
 
 	public NodeNetwork() throws FileNotFoundException {
 		myNodes = new ArrayList<Node>();
@@ -125,10 +126,17 @@ public class NodeNetwork {
 		generation++;
 		ArrayList<Car> newGeneration = new ArrayList<Car>();
 
-		int max = 0;
+		int min = Integer.MAX_VALUE;
 		for (Car c : myCars)
+			if (c.points < min)
+				min = c.points;
+
+		int max = 0;
+		for (Car c : myCars) {
+			c.points -= min + 1;
 			if (c.points > max)
 				max = c.points;
+		}
 
 		int total = 0;
 		Car bestCar = null;
@@ -145,10 +153,12 @@ public class NodeNetwork {
 			// System.out.println(c.name + " | " + c.points);
 		}
 
-		bestCar.name = "0";
-		bestCar2.name = "1";
-		newGeneration.add(bestCar2);
 		newGeneration.add(bestCar);
+		newGeneration.add(bestCar2);
+		bestCar.name = "0";
+		bestCar.points = 1;
+		bestCar2.name = "1";
+		bestCar2.points = 1;
 
 		for (Car c : myCars) {
 			c.percent = Math.round((double) c.points / (double) total * 1000.0);
@@ -278,9 +288,9 @@ public class NodeNetwork {
 		}
 
 		updateGeneration();
-
+		currentTotalPoints = 0;
 		for (Car car : myCars) {
-
+			currentTotalPoints += car.points;
 			if (car.targetSpeed > car.speed) {
 				car.speed += 0.01;
 				if (car.speed > car.targetSpeed)
@@ -393,6 +403,7 @@ public class NodeNetwork {
 		g2.setColor(Color.black);
 		g2.drawString("Generation: " + generation, 10, 20);
 		g2.drawString("Updates Left: " + (updateMaximum - updates), 10, 35);
+		g2.drawString("Accumulated Points: " + currentTotalPoints, 10, 50);
 		g2.setStroke(new BasicStroke(2f));
 
 		for (int i = 0; i < myEdges.size(); i++) {
